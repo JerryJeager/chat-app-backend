@@ -10,9 +10,9 @@ type User struct {
 }
 
 type CreateUserReq struct {
-	Username string `json:"username" db:"username"`
-	Email    string `json:"email" db:"email"`
-	Password string `json:"password" db:"password"`
+	Username string `json:"username" binding:"required" db:"username"`
+	Email    string `json:"email" binding:"required" db:"email"`
+	Password string `json:"password" binding:"required" db:"password"`
 }
 
 type CreateUserRes struct {
@@ -22,14 +22,14 @@ type CreateUserRes struct {
 }
 
 type LoginUserReq struct {
-	Email    string `json:"email" db:"email"`
-	Password string `json:"password" db:"password"`
+	Email    string `json:"email" binding:"required" db:"email"`
+	Password string `json:"password" binding:"required" db:"password"`
 }
 
 type LoginUserRes struct {
-	AccessToken string
-	ID         string `json:"id" db:"id"`
-	Username   string `json:"username" db:"username"`
+	AccessToken string `json:"access_token"`
+	ID          string `json:"id" db:"id"`
+	Username    string `json:"username" db:"username"`
 }
 
 type Repository interface {

@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"errors"
 	"os"
 	"strconv"
 	"time"
@@ -57,6 +58,10 @@ func (s *service) CreateUser(c context.Context, req *CreateUserReq) (*CreateUser
 }
 
 func (s *service) Login(c context.Context, req *LoginUserReq) (*LoginUserRes, error) {
+	tokenSecret := os.Getenv("TOKEN_SECRET_KEY")
+	if tokenSecret == ""{
+		return &LoginUserRes{}, errors.New("secret is an empty string")
+	}
 	ctx, cancel := context.WithTimeout(c, s.timeout)
 	defer cancel()
 
@@ -78,7 +83,7 @@ func (s *service) Login(c context.Context, req *LoginUserReq) (*LoginUserRes, er
 		},
 	})
 
-	ss, err := token.SignedString([]byte(os.Getenv("TOKEN_SECRET_KEY")))
+	ss, err := token.SignedString([]byte(tokenSecret))
 	if err != nil {
 		return &LoginUserRes{}, err
 	}

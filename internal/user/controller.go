@@ -41,11 +41,13 @@ func (c *Controller) LoginUser(ctx *gin.Context) {
 	u, err := c.Service.Login(ctx.Request.Context(), &user)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 
 	ctx.SetCookie("jwt", u.AccessToken, 3600, "/", "localhost", false, true)
 
 	res := &LoginUserRes{
+		AccessToken: u.AccessToken,
 		Username: u.Username,
 		ID:       u.ID,
 	}
