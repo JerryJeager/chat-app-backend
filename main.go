@@ -7,6 +7,7 @@ import (
 	"github.com/JerryJeager/chat-app-backend/config"
 	"github.com/JerryJeager/chat-app-backend/db"
 	"github.com/JerryJeager/chat-app-backend/internal/user"
+	"github.com/JerryJeager/chat-app-backend/internal/ws"
 	"github.com/JerryJeager/chat-app-backend/router"
 )
 
@@ -21,7 +22,12 @@ func main() {
 	userSvc := user.NewService(userRep)
 	userController := user.NewController(userSvc)
 
-	router.InitRouter(userController)
+	hub := ws.NewHub()
+	wsController := ws.NewController(hub)
+
+	go hub.Run()
+
+	router.InitRouter(userController, wsController)
 
 	port := os.Getenv("PORT")
 	if port == "" {
